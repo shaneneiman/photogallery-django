@@ -1,17 +1,9 @@
-from django.shortcuts import render
+#Django Imports 
+from django.shortcuts import render, redirect, get_object_or_404
+from allauth.account.views import LoginView, SignupView, LogoutView, PasswordSetView, PasswordChangeView, PasswordResetView, EmailView, ConfirmEmailView
+from allauth.socialaccount.views import ConnectionsView
+
+#Project File Imports
+from .models import User
 
 # Create your views here.
-def create_user(request):
-    pass
-
-
-def edit_profile(request):
-    pass
-
-
-def login_user(request):
-    pass
-
-
-def view_profile(request):
-    pass

@@ -13,17 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# django imports
 from django.contrib import admin
 from django.conf import settings
 from django.urls import include, path
-from django.views.generic.base import RedirectView
+from django.conf.urls.static import static
+
+# views imports
+from photogallery.views import index_randomlist
+#from users.views import 
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("photogallery/", include("photogallery.urls")),
-    path("users/", include("users.urls")),
-    path("", RedirectView.as_view(url="photogallery/index/", permanent=False)),
-]
+    path("accounts/", include("allauth.urls")),
+    path("", index_randomlist, name="index"),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar

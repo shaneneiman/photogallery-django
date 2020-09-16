@@ -14,7 +14,7 @@
             {% block navbar %}
             <nav>
                 <a href="#">Home</a>
-                {% if request.user.is_authenticated %}
+                {% if user.is_authenticated %}
                 <a href="#">Profile</a>
                 <a href="#">My Galleries</a>
                 <a href="#">My Photos</a>
@@ -22,7 +22,8 @@
                 <a href="#">Logout</a>
                 {% else %}
                 <a href="#">Search</a>
-                <a href="#">Login</a>
+                <a href="{% url 'account_login' %}">Login</a>
+                {% endif %}
             </nav>
             {% endblock %}
         </header>

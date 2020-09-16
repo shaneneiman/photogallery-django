@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h2>Welcome, {{ request.user }}!</h2>
+{% endif %}
+{% for photo in photos %}
+<p>{{ photo.photo }}</p>
+{% endfor %}
+{% endblock %}
