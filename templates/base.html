@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang=en>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <title>Photo Gallery</title>
+    </head>
+    <body>
+        <header>
+            <h1>Photo Gallery</h1>
+            {% block navbar %}
+            <nav>
+                <a href="#">Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="#">Profile</a>
+                <a href="#">My Galleries</a>
+                <a href="#">My Photos</a>
+                <a href="#">Search</a>
+                <a href="#">Logout</a>
+                {% else %}
+                <a href="#">Search</a>
+                <a href="#">Login</a>
+            </nav>
+            {% endblock %}
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </body>
+</html>
