@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if photos is not None %}
+    {%for photo in photos %}
+        <img src="{{ photo.photo_thumb.url }}"/>
+    {% empty %}
+        <p>You have no photos. Add some now!</p>
+        <a href="{% url 'add_photo' %}">Add Photo</a>
+        <p>Or start a gallery!</p>
+        <a href="{% url 'add_gallery' %}">Create Gallery</a>
+    {% endfor %}
+{% endif %}
+{% endblock %}

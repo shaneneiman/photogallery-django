@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
 
     # Project-specific
     'users',
@@ -61,9 +62,19 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 # Provider specific settings
-#SOCIALACCOUNT_PROVIDERS = {
-#   
-#}
+SOCIALACCOUNT_PROVIDERS = {
+   'github': {
+       'APP': {
+           'client_id' : env('GITHUB_CLIENT_ID'),
+           'secret' : env('GITHUB_SECRET'),
+       }
+   }
+}
+
+# Custom allauth forms
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignUpForm',
+}
 
 MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',

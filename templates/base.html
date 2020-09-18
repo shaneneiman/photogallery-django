@@ -13,13 +13,13 @@
             <h1>Photo Gallery</h1>
             {% block navbar %}
             <nav>
-                <a href="#">Home</a>
+                <a href="{%url 'index' %}">Home</a>
                 {% if user.is_authenticated %}
-                <a href="#">Profile</a>
-                <a href="#">My Galleries</a>
-                <a href="#">My Photos</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'user_galleries' %}">My Galleries</a>
+                <a href="{% url 'user_photos' %}">My Photos</a>
                 <a href="#">Search</a>
-                <a href="#">Logout</a>
+                <a href="{% url 'account_logout' %}">Logout</a>
                 {% else %}
                 <a href="#">Search</a>
                 <a href="{% url 'account_login' %}">Login</a>

@@ -7,3 +7,5 @@ from allauth.socialaccount.views import ConnectionsView
 from .models import User
 
 # Create your views here.
+def view_profile(request):
+    return render(request, "users/profile.html")

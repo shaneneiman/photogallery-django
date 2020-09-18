@@ -20,14 +20,27 @@ from django.urls import include, path
 from django.conf.urls.static import static
 
 # views imports
-from photogallery.views import index_randomlist
-#from users.views import 
+from photogallery import views
+from users.views import view_profile
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
-    path("", index_randomlist, name="index"),
+    path("", views.index_randomlist, name="index"),
+    path("accounts/profile/", view_profile, name="profile"),
+    # Photo URLS
+    path("photo/add/", views.add_photo, name="add_photo"),
+    path("photo/delete/<int:photo_pk>", views.delete_photo, name="delete_photo"),
+    path("photo/userphotos", views.user_photos_list, name="user_photos"),
+    #Gallery URLS
+    path("gallery/add/", views.add_gallery, name="add_gallery"),
+    path("gallery/addphoto/<int:gallery_pk>", views.add_photo_to_gallery, name="add_photo_to_gallery"),
+    path("gallery/delete/<int:gallery_pk>", views.delete_gallery, name="delete_gallery"),
+    path("gallery/usergalleries", views.user_galleries_list, name="user_galleries"),
+    path("gallery/view/<int:gallery_pk>", views.view_gallery, name="view_gallery"),
+
+    
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
