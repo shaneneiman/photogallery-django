@@ -9,7 +9,10 @@
 </p>
 {% endif %}
 {% for photo in photos %}
-<img src="{{ photo.photo_thumb.url }}"/>
-<div>{{ photo.camera }}</div>
+<p>
+    <img src="{{ photo.photo_thumb.url }}"/>
+    <div>{{ photo.camera }}</div>
+    <a href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
+</p>
 {% endfor %}
 {% endblock %}

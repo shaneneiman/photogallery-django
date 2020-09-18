@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<img src="{{ photo.photo_large.url }}"/>
+<p>Camera: {{ photo.camera }}</p>
+<p>By: {{ photo.photo_by }}</p>
+<p>Date: {{ photo.photo_added_date }}</p>
+{% if user.is_authenticated and request.user == photo.photo_by %}
+<p>
+    <a href="#">Edit Photo</a>
+    <a href="{% url 'delete_photo' photo_pk=photo_pk %}">Delete Photo</a>
+</p>
+{% else %}
+<div>
+    <form action="{% url 'add_comment' photo_pk=photo_pk %}" method="POST">
+        {% csrf_token %}
+        {{ CommentForm.as_p }}
+        <button type="submit">Add Comment</button>
+    </form>
+</div>
+{% endif %}
+<h2>Comments</h2>
+{% if comments is not None %}
+    {% for comment in comments %}
+    <p>
+        {{ comment.comment_by }}
+        {{ comment.body }}
+        {{ comment.comment_date }}
+    </p>
+    {% empty %}
+    <p>No comments yet!</p>
+    {% endfor %}
+{% endif %}
+{% endblock %}

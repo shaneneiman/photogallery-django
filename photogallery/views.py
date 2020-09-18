@@ -8,6 +8,24 @@ from .forms import PhotoForm, GalleryForm, CommentForm
 
 # Create your views here.
 @login_required
+def add_comment(request, photo_pk):
+    if request.method == "GET":
+        form = CommentForm()
+    else:
+        photo = get_object_or_404(Photo, pk=photo_pk)
+        form = CommentForm(request.POST)
+        if form.is_valid:
+            comment = form.save(commit=False)
+            comment.comment_by = request.user
+            comment.comments = photo
+            comment.save()
+            return redirect(to="view_photo", photo_pk=photo_pk)
+    return render(request, "photogallery/add_comment.html", {
+        "form": form
+    })
+
+
+@login_required
 def add_gallery(request):
     if request.method == "GET":
         form = GalleryForm()
@@ -53,7 +71,7 @@ def add_photo_to_gallery(request, gallery_pk):
             photo.gallery_photos.add(gallery)
             photo.save()
             return redirect(to="view_gallery", question_pk=question_pk)
-    return render(request, "photogallery/add_photo.html", {
+    return render(request, "photogallery/add_photo_to_gallery.html", {
         "form": form
     })
 
@@ -125,6 +143,7 @@ def user_photos_list(request):
         "photos": photos
     })
 
+
 def view_gallery(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     photos = gallery.photos.all()
@@ -133,4 +152,15 @@ def view_gallery(request, gallery_pk):
         "photos": photos,
         "PhotoForm": PhotoForm,
         "gallery_pk": gallery_pk
+    })
+
+
+def view_photo(request, photo_pk):
+    photo = get_object_or_404(Photo, pk=photo_pk)
+    comments = photo.photo_comments.all()
+    return render(request, "photogallery/view_photo.html", {
+        "photo": photo,
+        "comments": comments,
+        "CommentForm": CommentForm,
+        "photo_pk": photo_pk
     })

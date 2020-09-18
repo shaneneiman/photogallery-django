@@ -19,9 +19,12 @@
 {% endif %}
 <h2>Photos</h2>
 {% if photos is not None %}
-    {%for photo in photos %}
+    {% for photo in photos %}
+    <p>
         <img src="{{ photo.photo_thumb.url }}"/>
         <div>{{ photo.camera }}</div>
+        <a href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
+    </p>
     {% empty %}
         {% if user.is_authenticated and request.user == gallery.gallery_of.all %}
         <p>You have no photos. Add some now!</p>
