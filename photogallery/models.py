@@ -1,10 +1,22 @@
 from django.db import models
+from django.db.models import Q
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 from users.models import User
 
 # Create your models here.
+class PhotoQuerySet(models.QuerySet):
+    def interacted_with(self):
+        #public_photos = self.exclude(public_photo=False)
+        photos = self.filter(
+            Q(public_photo=True), Q(photo_comments__isnull=False) | Q(starred_by__isnull=False)
+        )
+        return photos
+
+
 class Photo(models.Model):
+    objects = PhotoQuerySet.as_manager()
+
     photo = models.ImageField(upload_to="photos/", null=True, blank=True)
     photo_thumb = ImageSpecField(source="photo", processors=[ResizeToFit(200,200)], format="JPEG", options={"quality": 80})
     photo_large = ImageSpecField(source="photo", processors=[ResizeToFit(800,800)], format="JPEG", options={"quality": 90})

@@ -119,10 +119,7 @@ def edit_gallery(request):
 
 
 def index_randomlist(request):
-    # Later add annotate to only display photos that are public 
-    # and have a comments or are starred.
-    # Limit display to 15 photos?
-    photos = Photo.objects.all()
+    photos = Photo.objects.interacted_with
     return render(request, "photogallery/index.html", {
         "photos": photos
     })
