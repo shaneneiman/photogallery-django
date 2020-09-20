@@ -93,7 +93,7 @@ def delete_gallery_and_photos(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     if request.method == "POST":
         for photo in gallery.gallery_photos.all():
-            photo.remove(photo.pk)
+            photo.delete()
             return gallery
         gallery.delete()
         return redirect ("user_galleries")
