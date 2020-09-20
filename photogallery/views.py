@@ -70,7 +70,7 @@ def add_photo_to_gallery(request, gallery_pk):
             photo.save()
             photo.gallery_photos.add(gallery)
             photo.save()
-            return redirect(to="view_gallery", question_pk=question_pk)
+            return redirect(to="view_gallery", gallery_pk=gallery_pk)
     return render(request, "photogallery/add_photo_to_gallery.html", {
         "form": form
     })
@@ -93,11 +93,11 @@ def delete_gallery_and_photos(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     if request.method == "POST":
         for photo in gallery.gallery_photos.all():
-            photo.delete()
+            photo.remove(photo.pk)
             return gallery
         gallery.delete()
         return redirect ("user_galleries")
-    return render (request, "photogallery/delete_gallery.html", {
+    return render (request, "photogallery/delete_gallery_and_photos.html", {
         "gallery": gallery
     })
 
@@ -120,8 +120,10 @@ def edit_gallery(request):
 
 def index_randomlist(request):
     photos = Photo.objects.interacted_with
+    all_photos = Photo.objects.order_by('?').all()[:3]
     return render(request, "photogallery/index.html", {
-        "photos": photos
+        "photos": photos,
+        "all_photos": all_photos
     })
 
 

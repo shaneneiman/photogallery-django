@@ -8,7 +8,17 @@
 <a href="{% url 'add_gallery' %}">Create Gallery</a>
 </p>
 {% endif %}
+<p>Top Photos</p>
 {% for photo in photos %}
+<p>
+    <img src="{{ photo.photo_thumb.url }}"/>
+    <div>{{ photo.camera }}</div>
+    <a href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
+</p>
+{% endfor %}
+
+<p>Photos</p>
+{% for photo in all_photos %}
 <p>
     <img src="{{ photo.photo_thumb.url }}"/>
     <div>{{ photo.camera }}</div>
