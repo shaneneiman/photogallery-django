@@ -3,6 +3,15 @@
 {% block content %}
 
 <img src="{{ photo.photo_large.url }}"/>
+<h4>
+    <a id="toggle-star" data-photo-id="{{ photo_pk }}">
+        {% if starred_photo == True %}
+            &#9733;
+        {% else %}
+            &#9734;
+        {% endif %}
+    </a> Number of stars: {{ photo.num_stars }}
+</h4>
 <p>Camera: {{ photo.camera }}</p>
 <p>By: {{ photo.photo_by }}</p>
 <p>Date: {{ photo.photo_added_date }}</p>
@@ -32,4 +41,24 @@
     <p>No comments yet!</p>
     {% endfor %}
 {% endif %}
+
+
+<script>
+    const toggleStarLink = document.querySelector("#toggle-star")
+    toggleStarLink.addEventListener("click", function (e) {
+        e.preventDefault()
+        const photoId = toggleStarLink.dataset.photoId
+        fetch(`/photo/${photoId}/starred/`, {
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.starred_photo) {
+                toggleStarLink.innerHTML = "&#9733;"
+            } else {
+                toggleStarLink.innerHTML = "&#9734;"
+            }
+        })
+    })
+</script>
 {% endblock %}

@@ -1,6 +1,11 @@
 #Django Imports 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+
 
 #Project File Imports
 from .models import Photo, Gallery, Comment, Pinned
@@ -93,7 +98,7 @@ def delete_gallery_and_photos(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     if request.method == "POST":
         for photo in gallery.gallery_photos.all():
-            photo.delete()
+            gallery.gallery_photos.remove(photo)
             return gallery
         gallery.delete()
         return redirect ("user_galleries")
@@ -128,6 +133,19 @@ def index_randomlist(request):
 
 
 @login_required
+@csrf_exempt
+@require_POST
+def toggle_fav_photo(request, photo_pk):
+    photo = get_object_or_404(Photo, pk=photo_pk)
+    if photo in request.user.starred_photos.all():
+        request.user.starred_photos.remove(photo)
+        return JsonResponse({"starred_photo": False})
+    else:
+        request.user.starred_photos.add(photo)
+        return JsonResponse({"starred_photo": True})
+
+
+@login_required
 def user_galleries_list(request):
     galleries = request.user.gallery_users.all()
     return render(request, "photogallery/user_galleries_list.html", {
@@ -156,10 +174,15 @@ def view_gallery(request, gallery_pk):
 
 def view_photo(request, photo_pk):
     photo = get_object_or_404(Photo, pk=photo_pk)
+    photo = Photo.objects.annotate(num_stars=Count("starred_by")).get(pk=photo_pk)
     comments = photo.photo_comments.all()
+    starred_photo = False
+    if photo in request.user.starred_photos.all():
+        starred_photo = True
     return render(request, "photogallery/view_photo.html", {
         "photo": photo,
         "comments": comments,
         "CommentForm": CommentForm,
-        "photo_pk": photo_pk
+        "photo_pk": photo_pk,
+        "starred_photo": starred_photo
     })
