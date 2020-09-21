@@ -29,6 +29,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("", views.index_randomlist, name="index"),
     path("accounts/profile/", view_profile, name="profile"),
+    path("search/", views.search, name="search"),
     # Photo URLS
     path("photo/add/", views.add_photo, name="add_photo"),
     path("photo/delete/<int:photo_pk>", views.delete_photo, name="delete_photo"),

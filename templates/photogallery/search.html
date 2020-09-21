@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Search</h2>
+<div>
+    <form action="{% url 'search' %}" method="GET">
+        <input type="search" name="q" placeholder="Seach Photos and Galleries" value="{{query}}">
+        <p>
+            <button type="submit">Search</button>
+        </p>
+    </form>
+</div>
+
+
+{% if galleries is not None %}
+    {% for gallery in galleries %}
+        <div>
+            <p>{{ gallery.title }}</p>
+            <a href="{% url 'view_gallery' gallery.pk %}">View Gallery</a>
+        </div>
+    {% empty %}
+        <p class="text">There are no galleries matching your search</p>
+    {% endfor %}
+{% endif %}
+{% if photos is not None %}
+    {% for photo in photos %}
+        <div>
+            <img src="{{ photo.photo_thumb.url }}"/>
+            <p>{{ photo.camera }} </p>
+            <p>{{ photo.photo_by }} </p>
+            <a href="{% url 'view_photo' photo.pk %}">View Photo</a>
+        </div>
+    {% empty %}
+        <p class="text">There are no photos matching your search</p>
+    {% endfor %}
+{% endif %}
+{% endblock %}

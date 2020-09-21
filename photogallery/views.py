@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.contrib.postgres.search import SearchVector
+
 
 
 #Project File Imports
@@ -129,6 +131,26 @@ def index_randomlist(request):
     return render(request, "photogallery/index.html", {
         "photos": photos,
         "all_photos": all_photos
+    })
+
+def search(request):
+    query = request.GET.get("q")
+    public_photos = Photo.objects.exclude(public_photo=False)
+    public_galleries = Gallery.objects.exclude(public_gallery=False)
+    if query is not None:
+        galleries = public_galleries.annotate(
+            search=SearchVector("title", "gallery_of__username", "photos__camera")
+        ).filter(search=query).distinct("title")
+        photos = public_photos.annotate(
+            search=SearchVector("photo_by__username", "camera", "photo_comments__body")
+        ).filter(search=query)
+    else:
+        galleries = None
+        photos = None
+    return render(request, "photogallery/search.html", {
+        "galleries": galleries,
+        "photos": photos,
+        "query": query or ""
     })
 
 
