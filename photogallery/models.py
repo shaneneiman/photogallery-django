@@ -12,7 +12,11 @@ class PhotoQuerySet(models.QuerySet):
             Q(public_photo=True), Q(photo_comments__isnull=False) | Q(starred_by__isnull=False)
         )
         return photos
-        
+    
+    def public(self):
+        photos = self.exclude(public_photo=False)
+        return photos
+
 
 class Photo(models.Model):
     objects = PhotoQuerySet.as_manager()

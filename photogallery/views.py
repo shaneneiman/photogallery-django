@@ -8,12 +8,12 @@ from django.http import JsonResponse
 from django.contrib.postgres.search import SearchVector
 
 
-
 #Project File Imports
 from .models import Photo, Gallery, Comment, Pinned
 from .forms import PhotoForm, GalleryForm, CommentForm
 
-# Create your views here.
+
+# Views
 @login_required
 def add_comment(request, photo_pk):
     if request.method == "GET":
@@ -126,8 +126,8 @@ def edit_gallery(request):
 
 
 def index_randomlist(request):
-    photos = Photo.objects.interacted_with
-    all_photos = Photo.objects.order_by('?').all()[:3]
+    photos = Photo.objects.interacted_with().order_by('?').all()[:3]
+    all_photos = Photo.objects.public().order_by('?').all()[:5]
     return render(request, "photogallery/index.html", {
         "photos": photos,
         "all_photos": all_photos
@@ -194,6 +194,7 @@ def view_gallery(request, gallery_pk):
     })
 
 
+@login_required
 def view_photo(request, photo_pk):
     photo = get_object_or_404(Photo, pk=photo_pk)
     photo = Photo.objects.annotate(num_stars=Count("starred_by")).get(pk=photo_pk)

@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2 class="title">My Galleries</h2>
 {% if galleries is not None %}
     {%for gallery in galleries %}
-        <p>{{ gallery.title }}</p>
-        <a href="{% url 'view_gallery' gallery.pk %}">View Gallery</a>
+    <div class="flex-item">
+        <a class="link" href="{% url 'view_gallery' gallery.pk %}">{{ gallery.title }}</a>
+    </div>
     {% empty %}
-        <p>You have no galleries. Start one now!</p>
-        <a href="{% url 'add_gallery' %}">Create Gallery</a>
+        <p class="text">You have no galleries. Start one now!</p>
+        <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>
     {% endfor %}
 {% endif %}
 {% endblock %}

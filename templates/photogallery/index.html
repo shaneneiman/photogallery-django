@@ -2,27 +2,27 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<h2>Welcome, {{ request.user }}!</h2>
+<h2 class="title">Welcome, {{ request.user }}!</h2>
 <p>
-    <a href="{% url 'add_photo' %}">Add Photo</a>
-<a href="{% url 'add_gallery' %}">Create Gallery</a>
+    <a class="link" href="{% url 'add_photo' %}">Add Photo</a>
+    <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>
 </p>
 {% endif %}
-<p>Top Photos</p>
+<h3>Top Photos</h3>
 {% for photo in photos %}
-<p>
+<div class="flex-item">
     <img src="{{ photo.photo_thumb.url }}"/>
-    <div>{{ photo.camera }}</div>
-    <a href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
-</p>
+    <div class="text">{{ photo.camera }}</div>
+    <a class="link" href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
+</div>
 {% endfor %}
 
-<p>Photos</p>
+<h3>Photos</h3>
 {% for photo in all_photos %}
-<p>
+<div class="flex-item">
     <img src="{{ photo.photo_thumb.url }}"/>
-    <div>{{ photo.camera }}</div>
-    <a href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
-</p>
+    <div class="text">{{ photo.camera }}</div>
+    <a class="link" href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
+</div>
 {% endfor %}
 {% endblock %}

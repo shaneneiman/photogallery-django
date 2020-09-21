@@ -6,6 +6,7 @@ from allauth.socialaccount.views import ConnectionsView
 #Project File Imports
 from .models import User
 
-# Create your views here.
+
+# Views
 def view_profile(request):
     return render(request, "users/profile.html")
