@@ -53,10 +53,12 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
+    'rest_framework',
 
     # Project-specific
     'users',
     'photogallery',
+    'api',
 ]
 
 SITE_ID = 1
@@ -174,6 +176,13 @@ INTERNAL_IPS = [
     '127.0.0.1',
     # ...
 ]
+
+#Django Rest Framework Settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ]
+}
 
 # Configure Django App for Heroku.
 import django_heroku

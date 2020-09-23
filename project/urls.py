@@ -20,16 +20,19 @@ from django.urls import include, path
 from django.conf.urls.static import static
 
 # views imports
-from photogallery import views
-from users.views import view_profile
+from photogallery import views 
+from users import views as user_views
+from api import views as api_views
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
+    path('api-auth/', include('rest_framework.urls')),
     path("", views.index_randomlist, name="index"),
-    path("accounts/profile/", view_profile, name="profile"),
     path("search/", views.search, name="search"),
+    # User URLS
+    path("accounts/profile/", user_views.view_profile, name="profile"),
     # Photo URLS
     path("photo/add/", views.add_photo, name="add_photo"),
     path("photo/delete/<int:photo_pk>", views.delete_photo, name="delete_photo"),
@@ -37,14 +40,16 @@ urlpatterns = [
     path("photo/view/<int:photo_pk>", views.view_photo, name="view_photo"),
     path("photo/comment/<int:photo_pk>", views.add_comment, name="add_comment"),
     path("photo/<int:photo_pk>/starred/",views.toggle_fav_photo, name="toggle_fav_photo"),
-    #Gallery URLS
+    # Gallery URLS
     path("gallery/add/", views.add_gallery, name="add_gallery"),
     path("gallery/addphoto/<int:gallery_pk>", views.add_photo_to_gallery, name="add_photo_to_gallery"),
     path("gallery/delete/<int:gallery_pk>", views.delete_gallery, name="delete_gallery"),
     path("gallery/deletegalleryandphotos/<int:gallery_pk>", views.delete_gallery_and_photos, name="delete_gallery_and_photos"),
     path("gallery/usergalleries", views.user_galleries_list, name="user_galleries"),
     path("gallery/view/<int:gallery_pk>", views.view_gallery, name="view_gallery"),
-
+    # API URLS 
+    path("api/galleries/", api_views.GalleryListCreateView.as_view()),
+    path("api/galleries/<int:pk>", api_views.GalleryDetailView.as_view())
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
