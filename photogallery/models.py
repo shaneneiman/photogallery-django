@@ -9,7 +9,7 @@ class PhotoQuerySet(models.QuerySet):
     def interacted_with(self):
         #public_photos = self.exclude(public_photo=False)
         photos = self.filter(
-            Q(public_photo=True), Q(photo_comments__isnull=False) | Q(starred_by__isnull=False)
+            Q(photo_comments__isnull=False) | Q(starred_by__isnull=False)
         )
         return photos
     

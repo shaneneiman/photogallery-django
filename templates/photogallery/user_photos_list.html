@@ -2,17 +2,21 @@
 
 {% block content %}
 <h2 class="title">My Photos</h2>
-{% if photos is not None %}
-    {%for photo in photos %}
+<div class="flex-container">
+    {% if photos is not None %}
+    {% for photo in photos %}
     <div class="flex-item">
         <img src="{{ photo.photo_thumb.url }}"/><br>
         <a class="link" href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
     </div>
-    {% empty %}
-        <p class="text">You have no photos. Add some now!</p>
-        <a class="link" href="{% url 'add_photo' %}">Add Photo</a>
-        <p class="text">Or start a gallery!</p>
-        <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>
-    {% endfor %}
+{% empty %}
+<div class="flex-item">
+    <p class="text">You have no photos. Add some now!</p><br>
+    <a class="link" href="{% url 'add_photo' %}">Add Photo</a><br>
+    <p class="text">Or start a gallery!</p>
+    <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>
+</div>   
+{% endfor %}
 {% endif %}
+</div>
 {% endblock %}

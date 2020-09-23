@@ -12,9 +12,9 @@
         {% endif %}
     </a> Number of stars: {{ photo.num_stars }}
 </h4>
-<p class="text">Camera: {{ photo.camera }}</p>
-<p class="text">By: {{ photo.photo_by }}</p>
-<p class="text">Date: {{ photo.photo_added_date }}</p>
+<div class="text">Camera: {{ photo.camera }}</div><br>
+<div class="text">By: {{ photo.photo_by }}</div><br>
+<div class="text">Date: {{ photo.photo_added_date }}</div><br>
 {% if user.is_authenticated and request.user == photo.photo_by %}
 <p>
     <a class="link" href="#">Edit Photo</a>
@@ -33,9 +33,9 @@
 {% if comments is not None %}
     {% for comment in comments %}
     <div class="flex-item">
-        <p class="text">{{ comment.comment_by }}</p>
-        <p class="text">{{ comment.body }}</p>
-        <p class="text">{{ comment.comment_date }}</p>
+        <div class="text">{{ comment.comment_by }}</div><br>
+        <div class="text">{{ comment.body }}</div><br>
+        <div class="text">{{ comment.comment_date }}</div><br>
     </div>
     {% empty %}
     <p class="text">No comments yet!</p>

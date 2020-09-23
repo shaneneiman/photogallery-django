@@ -126,8 +126,8 @@ def edit_gallery(request):
 
 
 def index_randomlist(request):
-    photos = Photo.objects.interacted_with().order_by('?').all()[:3]
-    all_photos = Photo.objects.public().order_by('?').all()[:5]
+    photos = Photo.objects.public().interacted_with().order_by('?').all()[:4]
+    all_photos = Photo.objects.public().order_by('?').all()[:8]
     return render(request, "photogallery/index.html", {
         "photos": photos,
         "all_photos": all_photos

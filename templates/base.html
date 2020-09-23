@@ -21,13 +21,13 @@
                 <a href="{% url 'search' %}">Search</a>
                 <a href="{% url 'account_logout' %}">Logout</a>
                 {% else %}
-                <a href="#">Search</a>
+                <a href="{% url 'search' %}">Search</a>
                 <a href="{% url 'account_login' %}">Login</a>
                 {% endif %}
             </nav>
             {% endblock %}
         </header>
-        <main class="flex-container">
+        <main id="home-container">
             {% block content %}
             {% endblock %}
         </main>

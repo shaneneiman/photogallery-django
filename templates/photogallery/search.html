@@ -22,16 +22,18 @@
         <p class="text">There are no galleries matching your search</p>
     {% endfor %}
 {% endif %}
-{% if photos is not None %}
+<div class="flex-container">
+    {% if photos is not None %}
     {% for photo in photos %}
         <div class="flex-item">
             <img src="{{ photo.photo_thumb.url }}"/>
-            <p>{{ photo.camera }} </p>
-            <p>{{ photo.photo_by }} </p>
-            <a href="{% url 'view_photo' photo.pk %}">View Photo</a>
+            <p class="text">{{ photo.camera }} </p>
+            <p class="text">{{ photo.photo_by }} </p>
+            <a class="link" href="{% url 'view_photo' photo.pk %}">View Photo</a>
         </div>
     {% empty %}
         <p class="text">There are no photos matching your search</p>
     {% endfor %}
 {% endif %}
+</div>
 {% endblock %}
