@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 
 # Local File Imports
 from .serializers import GallerySerializer
-from photogallery.models import Gallery
+from photogallery.models import Gallery, Photo
 
 # Views
 class GalleryListCreateView(generics.ListCreateAPIView):
@@ -19,9 +19,18 @@ class GalleryListCreateView(generics.ListCreateAPIView):
         return Gallery.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(gallery_of.add(request.user))
-        #serializer.gallery_of.add(request.user)
-        #serializer.save()
+        gallery = serializer.save()
+        gallery.gallery_of.add(self.request.user)
+        
+
+    #def create(self, request, *args, **kwargs):
+    #    serializer = self.get_serializer(data=request.data)
+    #    serializer.is_valid(raise_exception=True)
+    #    self.perform_create(serializer)
+    #    self.request.user.gallery_users.add(serializer)
+    #    headers = self.get_success_headers(serializer.data)
+    #    return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        
 
 class GalleryDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = GallerySerializer
@@ -34,11 +43,11 @@ class ImageUploadParser(FileUploadParser):
     media_type = "image/*"
 
 
-class PhotoUploadtoGalleryView(APIView):
-    parser_classes = (ImageUploadParser)
+class PhotoUploadView(APIView):
+    parser_classes = (ImageUploadParser, )
 
-    def put(self, request, gallery_pk):
-        gallery = get_object_or_404(self.request.user.user_galleries, pk=gallery_pk)
+    def put(self, request, pk):
+        gallery = get_object_or_404(Gallery, pk=pk)
         if 'file' not in request.data:
             raise ParseError("Empty content")
 
@@ -50,5 +59,9 @@ class PhotoUploadtoGalleryView(APIView):
         except:
             raise ParseError("Unsupported image type")
         
-        gallery.photos.save(file.name, file, save=True)
+        photo = Photo.photo.save(file.name, file, commit=False)
+        photo.photo_by = request.user
+        photo.save()
+        gallery.photos.add(photo)
+        gallery.save()
         return Response(status=status.HTTP_200_OK)

@@ -10,7 +10,6 @@ class GallerySerializer(serializers.ModelSerializer):
             "id",
             "username",
             "title",
-            "public_gallery",
-            "gallery_of"
+            "public_gallery"
         ]
 

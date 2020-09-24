@@ -49,7 +49,8 @@ urlpatterns = [
     path("gallery/view/<int:gallery_pk>", views.view_gallery, name="view_gallery"),
     # API URLS 
     path("api/galleries/", api_views.GalleryListCreateView.as_view()),
-    path("api/galleries/<int:pk>", api_views.GalleryDetailView.as_view())
+    path("api/galleries/<int:pk>", api_views.GalleryDetailView.as_view()),
+    path("api/galleries/<int:pk>/addphoto/", api_views.PhotoUploadView.as_view()),
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

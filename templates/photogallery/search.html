@@ -15,8 +15,8 @@
 {% if galleries is not None %}
     {% for gallery in galleries %}
         <div class="flex-item">
-            <p>{{ gallery.title }}</p>
-            <a href="{% url 'view_gallery' gallery.pk %}">View Gallery</a>
+            <p class="text">{{ gallery.title }}</p>
+            <a class="link" href="{% url 'view_gallery' gallery.pk %}">View Gallery</a>
         </div>
     {% empty %}
         <p class="text">There are no galleries matching your search</p>
