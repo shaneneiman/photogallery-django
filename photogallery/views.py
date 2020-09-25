@@ -88,6 +88,7 @@ def add_photo_to_gallery(request, gallery_pk):
 def delete_gallery(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     if request.method == "POST":
+        gallery.clear()
         gallery.delete()
         return redirect ("user_galleries")
     return render (request, "photogallery/delete_gallery.html", {
@@ -99,8 +100,9 @@ def delete_gallery(request, gallery_pk):
 def delete_gallery_and_photos(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     if request.method == "POST":
-        for photo in gallery.gallery_photos.all():
-            gallery.gallery_photos.remove(photo)
+        for photo in gallery.photos:
+            gallery.remove(photo)
+            photo.delete()
             return gallery
         gallery.delete()
         return redirect ("user_galleries")
