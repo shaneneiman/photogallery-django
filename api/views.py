@@ -8,26 +8,37 @@ from PIL import Image
 from django.shortcuts import get_object_or_404
 
 # Local File Imports
-from .serializers import GallerySerializer, PhotoSerializer
-from photogallery.models import Gallery, Photo
+from .serializers import GallerySerializer, PhotoSerializer, NestedCommentSerializer
+from photogallery.models import Gallery, Photo, Comment
 
 # Views
+#Gallery Views
+
 class GalleryListCreateView(generics.ListCreateAPIView):
     serializer_class = GallerySerializer
 
     def get_queryset(self):
-        return Gallery.objects.all()
+        return Gallery.objects.for_user(self.request.user)
 
     def perform_create(self, serializer):
         gallery = serializer.save()
         gallery.gallery_of.add(self.request.user)
         
 
-class GalleryDetailView(generics.RetrieveDestroyAPIView):
+class GalleryDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GallerySerializer
 
     def get_queryset(self):
-        return self.request.user.gallery_users
+        return Gallery.objects.for_user(self.request.user)
+
+
+#Photo Views
+
+class PhotoDetailView(generics.RetrieveDestroyAPIView):
+    serializer_class = PhotoSerializer
+
+    def get_queryset(self):
+        return Photo.objects.for_user(self.request.user)
 
 # Class to restrict file uploads to just images uploads
 class ImageUploadParser(FileUploadParser):
@@ -54,11 +65,11 @@ class PhotoUploadtoGalleryView(APIView):
         except:
             raise ParseError("Unsupported image type")
         
-        photo = Photo.photo.save(file.name, file, commit=False)
+        photo = Photo.photo.save(file.name, file, save=False)
         photo.photo_by = request.user
         photo.save()
-        gallery.photos.add(photo)
-        return Response(status=status.HTTP_200_OK)
+        gallery.photos.add(uploaded_photo)
+        return Response(status=status.HTTP_201_CREATED)
     
     # PUT additional information or edit the photo using the pk
     def put(self, request, photo_pk):
@@ -72,7 +83,8 @@ class PhotoUploadtoGalleryView(APIView):
     # DELETE the photo using the pk, after removing it from the Gallery
     def delete(self, request, gallery_pk, photo_pk):
         gallery = get_object_or_404(request.user.gallery_users, pk=gallery_pk)
-        photo = get_object_or_404(request.user.user_photos, pk=pk)
+        photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
+        gallery.photos.remove(photo)
         photo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -94,10 +106,10 @@ class PhotoUploadView(APIView):
         except:
             raise ParseError("Unsupported image type")
 
-        photo = Photo.photo.save(file.name, file, commit=False)
+        photo = Photo.photo.save(file.name, file, save=False)
         photo.photo_by = request.user
         photo.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
 
     # PUT additional information or edit the photo using the pk
     def put(self, request, pk):
@@ -113,5 +125,3 @@ class PhotoUploadView(APIView):
         photo = get_object_or_404(request.user.user_photos, pk=pk)
         photo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-

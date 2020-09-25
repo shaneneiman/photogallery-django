@@ -17,6 +17,13 @@ class PhotoQuerySet(models.QuerySet):
         photos = self.exclude(public_photo=False)
         return photos
 
+    def for_user(self, user):
+        if user.is_authenticated:
+            photos = self.filter(Q(public_photo=True) | Q(user=user))
+        else:
+            photos = self.filter(public_photo=True)
+        return photos
+
 
 class Photo(models.Model):
     objects = PhotoQuerySet.as_manager()
@@ -32,7 +39,17 @@ class Photo(models.Model):
     public_photo = models.BooleanField(default=True)
 
 
+class GalleryQuerySet(models.QuerySet):
+    def for_user(self, user):
+        if user.is_authenticated:
+            galleries = self.filter(Q(public_gallery=True) | Q(user=user))
+        else:
+            galleries = self.filter(public_gallery=True)
+        return galleries
+
 class Gallery(models.Model):
+    objects = GalleryQuerySet.as_manager()
+
     title = models.CharField(max_length=100, null=False, blank=False)
     photos = models.ManyToManyField(to=Photo, related_name="gallery_photos", blank=True)
     gallery_of = models.ManyToManyField(to=User, related_name="gallery_users", blank=True)
