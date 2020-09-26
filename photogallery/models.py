@@ -28,7 +28,7 @@ class PhotoQuerySet(models.QuerySet):
 class Photo(models.Model):
     objects = PhotoQuerySet.as_manager()
 
-    photo = models.ImageField(upload_to="photos/", null=False, blank=False)
+    photo = models.ImageField(upload_to="photos/", null=True, blank=True)
     photo_thumb = ImageSpecField(source="photo", processors=[ResizeToFit(200,200)], format="JPEG", options={"quality": 80})
     photo_large = ImageSpecField(source="photo", processors=[ResizeToFit(800,800)], format="JPEG", options={"quality": 90})
     photo_by = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="user_photos", null=True, blank=True)

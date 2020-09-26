@@ -17,8 +17,8 @@ class NestedCommentSerializer(serializers.ModelSerializer):
 # Main Serializers
 class PhotoSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="photo_by.username", read_only=True)
-    photo_thumb = serializers.ImageField()
-    photo_large = serializers.ImageField()
+    photo_thumb = serializers.ImageField(required=False)
+    photo_large = serializers.ImageField(required=False)
     comments = NestedCommentSerializer(many=True, read_only=True)
 
     class Meta:
