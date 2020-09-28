@@ -50,15 +50,16 @@ class GalleryDeleteView(generics.DestroyAPIView):
 
 # Photo Views
 
-# Add Photo to a Gallery and List Photos
-class GalleryPhotoCreateView(generics.CreateAPIView):
-    serializer_class = PhotoSerializer
-
-    def perform_create(self, serializer, gallery_pk):
-        gallery = get_object_or_404(self.request.user.gallery_users, pk=gallery_pk)
-        photo = serializer.save(photo_by=self.request.user)
-        gallery.photos.add(photo)
-
+# Add Photo to a Gallery
+class GalleryPhotoCreateView(APIView):
+    def post(self, request, gallery_pk):
+        serializer = PhotoSerializer(data=request.data)
+        gallery = get_object_or_404(request.user.gallery_users, pk=gallery_pk)
+        if serializer.is_valid():
+            photo = serializer.save(photo_by=request.user)
+            gallery.photos.add(photo)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Class to restrict file uploads to just images uploads
 class ImageUploadParser(FileUploadParser):
@@ -84,7 +85,7 @@ class GalleryPhotoUploadDeleteView(APIView):
         except:
             raise ParseError("Unsupported image type")
         
-        photo = Photo.photo.save(file.name, file, save=True)
+        photo.photo.save(file.name, file, save=True)
         return Response(status=status.HTTP_200_OK)
     
     # DELETE the photo using the pk, after removing it from the Gallery
@@ -111,7 +112,7 @@ class PhotoUploadDeleteView(APIView):
     parser_classes = (ImageUploadParser, )
 
     # PUT image file in photo using the pk
-    def put(self, request):
+    def put(self, request, photo_pk):
         photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
         if 'file' not in request.data:
             raise ParseError("Empty content")
@@ -124,12 +125,12 @@ class PhotoUploadDeleteView(APIView):
         except:
             raise ParseError("Unsupported image type")
 
-        photo = Photo.photo.save(file.name, file, save=True)
-        return Response(status=status.HTTP_201_CREATED)
+        photo.photo.save(file.name, file, save=True)
+        return Response(status=status.HTTP_200_OK)
 
     # DELETE the photo using the pk
-    def delete(self, request, pk):
-        photo = get_object_or_404(request.user.user_photos, pk=pk)
+    def delete(self, request, photo_pk):
+        photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
         photo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -35,7 +35,7 @@ class PhotoSerializer(serializers.ModelSerializer):
         ]
 
 class GallerySerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source="gallery_of.get", read_only=True)
+    username = serializers.CharField(source="gallery_of.all", read_only=True)
     photos = PhotoSerializer(many=True, read_only=True)
 
     class Meta:

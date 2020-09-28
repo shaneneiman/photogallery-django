@@ -57,9 +57,9 @@ urlpatterns = [
     path("api/galleries/<int:gallery_pk>/photos/<int:photo_pk>", api_views.GalleryPhotoUploadDeleteView.as_view()),
     # Photos
     path("api/photos/", api_views.PhotoListCreateView.as_view()),
-    path("api/photos/<photo_pk>", api_views.PhotoDetailView.as_view()),
-    path("api/photos/<photo_pk>", api_views.PhotoUpdateView.as_view()),
-    path("api/photos/<photo_pk>", api_views.PhotoUploadDeleteView.as_view()),
+    path("api/photos/<int:photo_pk>", api_views.PhotoDetailView.as_view()),
+    path("api/photos/<int:photo_pk>", api_views.PhotoUpdateView.as_view()),
+    path("api/photos/<int:photo_pk>", api_views.PhotoUploadDeleteView.as_view()),
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

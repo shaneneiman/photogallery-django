@@ -4,7 +4,7 @@
 <h3 class="title">{{ gallery.title }}</h3>
 <p class="text">Started: {{ gallery.date_added }}</p>
 <p class="text">Updated: {{ gallery.date_updated }}</p>
-<p class="text">Owners: {{ gallery.gallery_of.get }}</p>
+<p class="text">Owners: {{ gallery.gallery_of.all }}</p>
 {% if user.is_authenticated and request.user in gallery.gallery_of.all %}
 <p>
     <a class="link" href="#">Edit Gallery</a><br>
