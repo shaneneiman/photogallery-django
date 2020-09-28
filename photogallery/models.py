@@ -1,15 +1,21 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Count
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 from users.models import User
 
 # Create your models here.
 class PhotoQuerySet(models.QuerySet):
+    def count_interactions(self):
+        photos = self.annotate(
+            num_stars=Count("starred_by", distinct=True),
+            num_comments=Count("photo_comments", distinct=True),
+        )
+        return photos
+
     def interacted_with(self):
-        #public_photos = self.exclude(public_photo=False)
-        photos = self.filter(
-            Q(photo_comments__isnull=False) | Q(starred_by__isnull=False)
+        photos = self.count_interactions().filter(
+            Q(num_comments__gt=0) | Q(num_stars__gt=0)
         )
         return photos
     

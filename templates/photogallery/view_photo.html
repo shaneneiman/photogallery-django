@@ -30,6 +30,7 @@
 </div>
 {% endif %}
 <h2 class="title">Comments</h2>
+<div class="text">Number of comments: {{ photo.num_comments }}</div>
 {% if comments is not None %}
     {% for comment in comments %}
     <div class="flex-item">

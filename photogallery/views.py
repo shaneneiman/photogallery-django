@@ -142,10 +142,10 @@ def search(request):
     if query is not None:
         galleries = public_galleries.annotate(
             search=SearchVector("title", "gallery_of__username", "photos__camera")
-        ).filter(search=query).distinct("title")
+        ).filter(search=query).distinct("pk")
         photos = public_photos.annotate(
             search=SearchVector("photo_by__username", "camera", "photo_comments__body")
-        ).filter(search=query)
+        ).filter(search=query).distinct("pk")
     else:
         galleries = None
         photos = None
@@ -188,18 +188,19 @@ def user_photos_list(request):
 def view_gallery(request, gallery_pk):
     gallery = get_object_or_404(Gallery, pk=gallery_pk)
     photos = gallery.photos.all()
+    user_list = list(gallery.gallery_of.all())    
     return render(request, "photogallery/view_gallery.html", {
         "gallery": gallery,
         "photos": photos,
         "PhotoForm": PhotoForm,
-        "gallery_pk": gallery_pk
+        "gallery_pk": gallery_pk,
+        "user_list": user_list
     })
 
 
 @login_required
 def view_photo(request, photo_pk):
-    photo = get_object_or_404(Photo, pk=photo_pk)
-    photo = Photo.objects.annotate(num_stars=Count("starred_by")).get(pk=photo_pk)
+    photo = get_object_or_404(Photo.objects.count_interactions(), pk=photo_pk)
     comments = photo.photo_comments.all()
     starred_photo = False
     if photo in request.user.starred_photos.all():
