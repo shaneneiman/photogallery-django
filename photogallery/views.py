@@ -1,11 +1,9 @@
 #Django Imports 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
-from django.contrib.postgres.search import SearchVector
 
 
 #Project File Imports
@@ -19,7 +17,7 @@ def add_comment(request, photo_pk):
     if request.method == "GET":
         form = CommentForm()
     else:
-        photo = get_object_or_404(Photo, pk=photo_pk)
+        photo = get_object_or_404(Photo.objects.for_user(request.user), pk=photo_pk)
         form = CommentForm(request.POST)
         if form.is_valid:
             comment = form.save(commit=False)
@@ -70,7 +68,7 @@ def add_photo_to_gallery(request, gallery_pk):
         form = PhotoForm()
     else:
         form = PhotoForm(request.POST, files=request.FILES)
-        gallery = get_object_or_404(Gallery, pk=gallery_pk)
+        gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
         if form.is_valid:
             photo = form.save(commit=False)
             photo.photo_by = request.user
@@ -86,7 +84,7 @@ def add_photo_to_gallery(request, gallery_pk):
 
 @login_required
 def delete_gallery(request, gallery_pk):
-    gallery = get_object_or_404(Gallery, pk=gallery_pk)
+    gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
     if request.method == "POST":
         gallery.clear()
         gallery.delete()
@@ -98,7 +96,7 @@ def delete_gallery(request, gallery_pk):
 
 @login_required
 def delete_gallery_and_photos(request, gallery_pk):
-    gallery = get_object_or_404(Gallery, pk=gallery_pk)
+    gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
     if request.method == "POST":
         for photo in gallery.photos:
             gallery.remove(photo)
@@ -113,7 +111,7 @@ def delete_gallery_and_photos(request, gallery_pk):
 
 @login_required
 def delete_photo(request, photo_pk):
-    photo = get_object_or_404(Photo, pk=photo_pk)
+    photo = get_object_or_404(request.user.photos, pk=photo_pk)
     if request.method == "POST":
         photo.delete()
         return redirect ("user_photos")
@@ -137,15 +135,11 @@ def index_randomlist(request):
 
 def search(request):
     query = request.GET.get("q")
-    public_photos = Photo.objects.exclude(public_photo=False)
-    public_galleries = Gallery.objects.exclude(public_gallery=False)
+    public_photos = Photo.objects.public()
+    public_galleries = Gallery.objects.public()
     if query is not None:
-        galleries = public_galleries.annotate(
-            search=SearchVector("title", "gallery_of__username", "photos__camera")
-        ).filter(search=query).distinct("pk")
-        photos = public_photos.annotate(
-            search=SearchVector("photo_by__username", "camera", "photo_comments__body")
-        ).filter(search=query).distinct("pk")
+        galleries = public_galleries.search().filter(search=query).distinct("pk")
+        photos = public_photos.search().filter(search=query).distinct("pk")
     else:
         galleries = None
         photos = None
@@ -160,7 +154,7 @@ def search(request):
 @csrf_exempt
 @require_POST
 def toggle_fav_photo(request, photo_pk):
-    photo = get_object_or_404(Photo, pk=photo_pk)
+    photo = get_object_or_404(Photo.objects.for_user(request.user), pk=photo_pk)
     if photo in request.user.starred_photos.all():
         request.user.starred_photos.remove(photo)
         return JsonResponse({"starred_photo": False})
@@ -171,7 +165,7 @@ def toggle_fav_photo(request, photo_pk):
 
 @login_required
 def user_galleries_list(request):
-    galleries = request.user.gallery_users.all()
+    galleries = request.user.galleries.all()
     return render(request, "photogallery/user_galleries_list.html", {
         "galleries": galleries
     })
@@ -179,7 +173,7 @@ def user_galleries_list(request):
 
 @login_required
 def user_photos_list(request):
-    photos = request.user.user_photos.all()
+    photos = request.user.photos.all()
     return render(request, "photogallery/user_photos_list.html", {
         "photos": photos
     })
@@ -200,8 +194,8 @@ def view_gallery(request, gallery_pk):
 
 @login_required
 def view_photo(request, photo_pk):
-    photo = get_object_or_404(Photo.objects.count_interactions(), pk=photo_pk)
-    comments = photo.photo_comments.all()
+    photo = get_object_or_404(Photo.objects.for_user(request.user).count_interactions(), pk=photo_pk)
+    comments = photo.comments.all()
     starred_photo = False
     if photo in request.user.starred_photos.all():
         starred_photo = True

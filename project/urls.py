@@ -58,7 +58,6 @@ urlpatterns = [
     path("api/photos/<int:pk>", api_views.PhotoDetailView.as_view()),
     path("api/photos/<int:photo_pk>", api_views.PhotoUploadView.as_view()),
     
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

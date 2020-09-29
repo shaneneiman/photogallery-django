@@ -26,7 +26,7 @@ class GalleryListCreateView(generics.ListCreateAPIView):
         gallery.gallery_of.add(self.request.user)
         
 
-# Get a Gallery
+# Get, Edit, Delete a Gallery using the pk
 class GalleryDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GallerySerializer
 
@@ -34,28 +34,12 @@ class GalleryDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return Gallery.objects.for_user(self.request.user)
         else:
-            return self.request.user.gallery_users
+            return self.request.user.galleries
 
     def perform_destroy(self, instance):
         instance.clear()
         instance.delete()
 
-
-# Update a Gallery using the pk
-#class GalleryUpdateView(generics.UpdateAPIView):
-#    serializer_class = GallerySerializer
-#    lookup_field = "gallery_pk"
-
-#    def get_queryset(self):
-#        return self.request.user.gallery_users
-
-# Delete a Gallery
-#class GalleryDeleteView(generics.DestroyAPIView):
-#    serializer_class = GallerySerializer
-
-#    def perform_destroy(self, instance):
-#        instance.clear()
-#        instance.delete()
 
 # Photo Views
 
@@ -63,7 +47,7 @@ class GalleryDetailView(generics.RetrieveUpdateDestroyAPIView):
 class GalleryPhotoCreateView(APIView):
     def post(self, request, gallery_pk):
         serializer = PhotoSerializer(data=request.data)
-        gallery = get_object_or_404(request.user.gallery_users, pk=gallery_pk)
+        gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
         if serializer.is_valid():
             photo = serializer.save(photo_by=request.user)
             gallery.photos.add(photo)
@@ -81,8 +65,8 @@ class GalleryPhotoUploadDeleteView(APIView):
 
     # PUT image file in photo using the pk 
     def put(self, request, gallery_pk, photo_pk):
-        gallery = get_object_or_404(request.user.gallery_users, pk=gallery_pk)
-        photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
+        gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
+        photo = get_object_or_404(request.user.photos, pk=photo_pk)
         if 'file' not in request.data:
             raise ParseError("Empty content")
 
@@ -99,8 +83,8 @@ class GalleryPhotoUploadDeleteView(APIView):
     
     # DELETE the photo using the pk, after removing it from the Gallery
     def delete(self, request, gallery_pk, photo_pk):
-        gallery = get_object_or_404(request.user.gallery_users, pk=gallery_pk)
-        photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
+        gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
+        photo = get_object_or_404(request.user.photos, pk=photo_pk)
         gallery.photos.remove(photo)
         photo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -122,7 +106,7 @@ class PhotoUploadView(APIView):
 
     # PUT image file in photo using the pk
     def put(self, request, photo_pk):
-        photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
+        photo = get_object_or_404(request.user.photos, pk=photo_pk)
         if 'file' not in request.data:
             raise ParseError("Empty content")
 
@@ -137,13 +121,8 @@ class PhotoUploadView(APIView):
         photo.photo.save(file.name, file, save=True)
         return Response(status=status.HTTP_200_OK)
 
-    # DELETE the photo using the pk
- #   def delete(self, request, photo_pk):
- #       photo = get_object_or_404(request.user.user_photos, pk=photo_pk)
- #       photo.delete()
- #       return Response(status=status.HTTP_204_NO_CONTENT)
 
-# Get a Photo using the pk
+# Get, Edit, Delete a Photo using the pk
 class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhotoSerializer
 
@@ -151,13 +130,4 @@ class PhotoDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return Photo.objects.for_user(self.request.user)
         else:
-            return self.request.user.user_photos
-
-# Update a Photo using the pk
-#class PhotoUpdateView(generics.UpdateAPIView):
-#    serializer_class = PhotoSerializer
-#    lookup_field = "id"
-
-#    def get_queryset(self):
-#        return self.request.user.user_photos
-
+            return self.request.user.photos
