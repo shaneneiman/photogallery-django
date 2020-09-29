@@ -52,12 +52,12 @@ urlpatterns = [
     # Galleries
     path("api/galleries/", api_views.GalleryListCreateView.as_view()),
     path("api/galleries/<int:pk>", api_views.GalleryDetailView.as_view()),
-    path("api/galleries/<int:gallery_pk>/addphoto/", api_views.GalleryPhotoCreateView.as_view()),
-    path("api/galleries/<int:gallery_pk>/photos/<int:photo_pk>", api_views.GalleryPhotoUploadDeleteView.as_view()),
+    path("api/galleries/<int:gallery_pk>/addphoto/", api_views.GalleryPhotoUploadView.as_view()),
+    path("api/galleries/<int:gallery_pk>/photos/<int:photo_pk>/delete", api_views.GalleryPhotoDeleteView.as_view()),
     # Photos
-    path("api/photos/", api_views.PhotoListCreateView.as_view()),
+    path("api/photos/", api_views.PhotoListView.as_view()),
+    path("api/photos/add/", api_views.PhotoUploadView.as_view()),
     path("api/photos/<int:pk>", api_views.PhotoDetailView.as_view()),
-    path("api/photos/<int:photo_pk>", api_views.PhotoUploadView.as_view()),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

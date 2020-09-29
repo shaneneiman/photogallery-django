@@ -73,7 +73,7 @@ def add_photo_to_gallery(request, gallery_pk):
             photo = form.save(commit=False)
             photo.photo_by = request.user
             photo.save()
-            photo.gallery_photos.add(gallery)
+            photo.gallery.add(gallery)
             photo.save()
             return redirect(to="view_gallery", gallery_pk=gallery_pk)
     return render(request, "photogallery/add_photo_to_gallery.html", {
@@ -97,6 +97,7 @@ def delete_gallery(request, gallery_pk):
 @login_required
 def delete_gallery_and_photos(request, gallery_pk):
     gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
+    user = request.user
     if request.method == "POST":
         for photo in gallery.photos:
             gallery.remove(photo)

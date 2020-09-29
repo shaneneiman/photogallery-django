@@ -37,22 +37,12 @@ class GalleryDetailView(generics.RetrieveUpdateDestroyAPIView):
             return self.request.user.galleries
 
     def perform_destroy(self, instance):
-        instance.clear()
+        gallery = instance
+        gallery.photos.clear()
         instance.delete()
 
 
 # Photo Views
-
-# Add Photo to a Gallery
-class GalleryPhotoCreateView(APIView):
-    def post(self, request, gallery_pk):
-        serializer = PhotoSerializer(data=request.data)
-        gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
-        if serializer.is_valid():
-            photo = serializer.save(photo_by=request.user)
-            gallery.photos.add(photo)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Class to restrict file uploads to just images uploads
 class ImageUploadParser(FileUploadParser):
@@ -60,13 +50,11 @@ class ImageUploadParser(FileUploadParser):
 
 
 # Add Image File to Photo in Gallery and Delete Photo from Gallery using the pks
-class GalleryPhotoUploadDeleteView(APIView):
+class GalleryPhotoUploadView(APIView):
     parser_classes = (ImageUploadParser, )
 
-    # PUT image file in photo using the pk 
-    def put(self, request, gallery_pk, photo_pk):
+    def post(self, request, gallery_pk):
         gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
-        photo = get_object_or_404(request.user.photos, pk=photo_pk)
         if 'file' not in request.data:
             raise ParseError("Empty content")
 
@@ -78,10 +66,17 @@ class GalleryPhotoUploadDeleteView(APIView):
         except:
             raise ParseError("Unsupported image type")
         
+        photo = Photo(photo_by=request.user)
         photo.photo.save(file.name, file, save=True)
-        return Response(status=status.HTTP_200_OK)
-    
-    # DELETE the photo using the pk, after removing it from the Gallery
+        serializer = PhotoSerializer(instance=photo, data=request.data)
+        if serializer.is_valid():
+            newphoto = serializer.save()
+            newphoto.gallery.add(gallery)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class GalleryPhotoDeleteView(APIView):
     def delete(self, request, gallery_pk, photo_pk):
         gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
         photo = get_object_or_404(request.user.photos, pk=photo_pk)
@@ -89,24 +84,20 @@ class GalleryPhotoUploadDeleteView(APIView):
         photo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-# Add or List Photo
-class PhotoListCreateView(generics.ListCreateAPIView):
+# List Photo
+class PhotoListView(generics.ListAPIView):
     serializer_class = PhotoSerializer
 
     def get_queryset(self):
         return Photo.objects.for_user(self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(photo_by=self.request.user)
 
 # Add Image File to Photo and Delete Photo using the pk
 class PhotoUploadView(APIView):
     parser_classes = (ImageUploadParser, )
 
     # PUT image file in photo using the pk
-    def put(self, request, photo_pk):
-        photo = get_object_or_404(request.user.photos, pk=photo_pk)
+    def post(self, request, photo_pk):
         if 'file' not in request.data:
             raise ParseError("Empty content")
 
@@ -118,6 +109,7 @@ class PhotoUploadView(APIView):
         except:
             raise ParseError("Unsupported image type")
 
+        photo = Photo(photo_by=request.user)
         photo.photo.save(file.name, file, save=True)
         return Response(status=status.HTTP_200_OK)
 
