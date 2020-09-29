@@ -121,12 +121,20 @@ def delete_photo(request, photo_pk):
 
 
 @login_required
-def edit_gallery(request):
-    pass
+def edit_gallery(request, gallery_pk):
+    gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
+    if request.method == "GET":
+        form = GalleryForm(instance=gallery)
+    else:
+        form = GalleryForm(data.request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            return redirect("view_gallery", gallery_pk=gallery.pk)
+    return render(request, "photogallery/edit_gallery.html")
 
 
 def index_randomlist(request):
-    photos = Photo.objects.public().interacted_with().order_by('?').all()[:4]
+    photos = Photo.objects.public().interacted_with()[:4]
     all_photos = Photo.objects.public().order_by('?').all()[:8]
     return render(request, "photogallery/index.html", {
         "photos": photos,

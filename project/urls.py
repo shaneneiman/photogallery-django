@@ -47,6 +47,7 @@ urlpatterns = [
     path("gallery/deletegalleryandphotos/<int:gallery_pk>", views.delete_gallery_and_photos, name="delete_gallery_and_photos"),
     path("gallery/usergalleries", views.user_galleries_list, name="user_galleries"),
     path("gallery/view/<int:gallery_pk>", views.view_gallery, name="view_gallery"),
+    path("gallery/edit/<int:gallery_pk>", views.edit_gallery, name="edit_gallery"),
     # API URLS 
     # Galleries
     path("api/galleries/", api_views.GalleryListCreateView.as_view()),

@@ -7,7 +7,7 @@
 <p class="text">Owners: {% for user in user_list %} {{ user.username }}, {% endfor %}</p>
 {% if user.is_authenticated and request.user in gallery.gallery_of.all %}
 <p>
-    <a class="link" href="#">Edit Gallery</a><br>
+    <a class="link" href="{% url 'edit_gallery' gallery_pk=gallery.pk %}">Edit Gallery</a><br>
     <a class="link" href="{% url 'delete_gallery' gallery_pk=gallery.pk %}">Delete Gallery</a>
 </p>
 <div>

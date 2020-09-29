@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q, Count
 from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFit
+from imagekit.processors import ResizeToFit, ResizeToFill
 from django.contrib.postgres.search import SearchVector
 from users.models import User
 
@@ -17,7 +17,7 @@ class PhotoQuerySet(models.QuerySet):
     def interacted_with(self):
         photos = self.count_interactions().filter(
             Q(num_comments__gt=0) | Q(num_stars__gt=0)
-        )
+        ).order_by("num_stars", "num_comments").reverse()
         return photos
     
     def public(self):
@@ -42,8 +42,8 @@ class Photo(models.Model):
     objects = PhotoQuerySet.as_manager()
 
     photo = models.ImageField(upload_to="photos/", null=True, blank=True)
-    photo_thumb = ImageSpecField(source="photo", processors=[ResizeToFit(200,200)], format="JPEG", options={"quality": 80})
-    photo_large = ImageSpecField(source="photo", processors=[ResizeToFit(800,800)], format="JPEG", options={"quality": 90})
+    photo_thumb = ImageSpecField(source="photo", processors=[ResizeToFill(200,200)], format="JPEG", options={"quality": 80})
+    photo_large = ImageSpecField(source="photo", processors=[ResizeToFit(600,600)], format="JPEG", options={"quality": 90})
     photo_by = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="photos", null=True, blank=True)
     photo_added_date = models.DateField(auto_now_add=True)
     camera = models.CharField(max_length=100, null=True, blank=True)
