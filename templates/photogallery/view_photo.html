@@ -21,11 +21,14 @@
 <div class="text">Camera: {{ photo.camera }}</div><br>
 <div class="text">By: {{ photo.photo_by }}</div><br>
 <div class="text">Date: {{ photo.photo_added_date }}</div><br>
+{% if gallery is not None %}
+<a class="link" href="{% url 'view_gallery' gallery_pk=gallery.pk %}">Visit Gallery</a>
+{% endif %}
 
 {% if user.is_authenticated and request.user == photo.photo_by %}
 <p>
     <a class="link" href="{% url 'edit_photo' photo_pk=photo.pk %}">Edit Photo</a>
-    <a class="link" href="{% url 'delete_photo' photo_pk=photo_pk %}">Delete Photo</a>
+    <a class="link" href="{% url 'delete_photo' photo_pk=photo.pk %}">Delete Photo</a>
 </p>
 {% endif %}
 <div>

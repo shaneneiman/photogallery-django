@@ -226,12 +226,16 @@ def view_photo(request, photo_pk):
     photo = get_object_or_404(Photo.objects.for_user(request.user).count_interactions(), pk=photo_pk)
     comments = photo.comments.all()
     starred_photo = False
+    gallery = None
     if photo in request.user.starred_photos.all():
         starred_photo = True
+    if photo.gallery.all() is not None:
+        gallery = photo.gallery.first()
     return render(request, "photogallery/view_photo.html", {
         "photo": photo,
         "comments": comments,
         "CommentForm": CommentForm,
         "photo_pk": photo_pk,
-        "starred_photo": starred_photo
+        "starred_photo": starred_photo,
+        "gallery": gallery
     })
