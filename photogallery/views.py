@@ -128,7 +128,7 @@ def edit_gallery(request, gallery_pk):
     if request.method == "GET":
         form = GalleryForm(instance=gallery)
     else:
-        form = GalleryForm(data.request.POST, instance=note)
+        form = GalleryForm(request.POST, instance=gallery)
         if form.is_valid():
             form.save()
             return redirect("view_gallery", gallery_pk=gallery.pk)
@@ -136,7 +136,6 @@ def edit_gallery(request, gallery_pk):
         "gallery": gallery,
         "photos": photos,
         "form": form,
-        "PhotoForm": PhotoForm
     })
 
 
@@ -146,7 +145,7 @@ def edit_photo(request, photo_pk):
     if request.method == "GET":
         form = PhotoForm(instance=photo)
     else:
-        form = PhotoForm(data.request.POST, instance=photo)
+        form = PhotoForm(request.POST, instance=photo)
         if form.is_valid():
             form.save()
             return redirect("view_photo", photo_pk=photo.pk)

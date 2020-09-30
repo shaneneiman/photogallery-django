@@ -16,10 +16,9 @@
     {% if galleries is not None %}
     {% for gallery in galleries %}
         <div class="flex-item">
-            <p class="text">{{ gallery.title }}</p>
+            <a class="link" href="{% url 'view_gallery' gallery.pk %}">{{ gallery.title }}</a>
             <div><img src="{{ gallery.photos.first.photo_thumb.url }}"></div>
-            <a class="link" href="{% url 'view_gallery' gallery.pk %}">View Gallery</a>
-        </div>
+        </div><br>
     {% empty %}
         <p class="text">There are no galleries matching your search</p>
     {% endfor %}
@@ -31,11 +30,10 @@
     {% if photos is not None %}
     {% for photo in photos %}
         <div class="flex-item">
-            <img src="{{ photo.photo_thumb.url }}"/>
-            <p class="text">{{ photo.camera }} </p>
-            <p class="text">{{ photo.photo_by }} </p>
-            <a class="link" href="{% url 'view_photo' photo.pk %}">View Photo</a>
-        </div>
+            <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
+            <div class="text">Camera: {{ photo.camera }} </div>
+            <div class="text">Taken by: {{ photo.photo_by }} </div>
+        </div><br>
     {% empty %}
         <p class="text">There are no photos matching your search</p>
     {% endfor %}

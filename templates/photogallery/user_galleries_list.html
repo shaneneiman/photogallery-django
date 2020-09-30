@@ -6,9 +6,9 @@
     {% if galleries is not None %}
     {% for gallery in galleries %}
     <div>
-        <div><img src="{{ gallery.photos.first.photo_thumb.url }}"></div>
         <a class="link" href="{% url 'view_gallery' gallery.pk %}">{{ gallery.title }}</a>
-    </div>
+        <div><img src="{{ gallery.photos.first.photo_thumb.url }}"></div>
+    </div><br>
     {% empty %}
     <p class="text">You have no galleries. Start one now!</p>
     <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>

@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block meta %}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <h2 class="title">Edit Gallery</h2>
 <div>
@@ -13,23 +17,80 @@
     </form>
 </div>
 <h2 class="title">Gallery Photos</h2>
-<div class="flex-container">
+<div id="current-photos" class="flex-container">
     {% for photo in photos %}
     <div class="flex-item">
-        <img src="{{ photo.photo_thumb.url }}"/>
+        <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
         <div class="text">{{ photo.camera }}</div>
-        <a class="link" href="{% url 'view_photo' photo_pk=photo.pk %}">View Photo</a>
     </div>
     {% empty %}
     <p class="text">There are no photos in this gallery yet!</p>
     {% endfor %}
 </div>
 <h2 class="title">Add more Photos to your Gallery</h2>
-<div>
-    <form action="{% url 'add_photo_to_gallery' gallery_pk=gallery.pk %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <p>{{ PhotoForm.photo }}</p>
-        <button type="submit">Add Photos</button>
-    </form>
-</div> 
+<form id="galleryphoto-form" data-photo-id="{{ gallery.id }}" class="form-style">
+    <div>
+        <label for="photos">Photos to upload</label>
+        <input type="file" id="photos" multiple><br><br>
+    </div>
+    <div>
+        <button type="submit">Upload Photos</button>
+    </div>
+</form>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken')
+
+const photoInput = document.querySelector("#photos")
+const galleryPhotoForm = document.querySelector("#galleryphoto-form")
+const currentPhotos = document.querySelector("#current-photos")
+let photoList = []
+
+photoInput.addEventListener("change", function () {
+    photoList = []
+    for (const photo of photoInput.files) {
+        photoList.push(photo)
+    }
+    console.log(photoList)
+})
+
+galleryPhotoForm.addEventListener("submit", function (event) {
+    event.preventDefault()
+    for (const photo of photoList) {
+        sendPhoto(photo)
+    }
+})
+
+const sendPhoto = function (photo) {
+    const filename = photo.name
+    const gallery_pk = galleryPhotoForm.dataset.photoId
+    const url = `/api/galleries/${gallery_pk}/addphoto/`
+    axios.post(url, photo, {
+        headers: {
+      'Content-Disposition': `attachment; filename=${filename}`,
+      'Content-Type': photo.type,
+      'X-CSRFToken': csrftoken
+    },
+    withCredentials: true
+    }).then(res => {
+        const newPhoto = document.createElement("img")
+        newPhoto.src = res.data.photo_thumb
+        currentPhotos.appendChild(newPhoto)
+    })
+}
+</script>
 {% endblock %}
