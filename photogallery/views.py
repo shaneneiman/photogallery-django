@@ -140,6 +140,21 @@ def edit_gallery(request, gallery_pk):
     })
 
 
+@login_required
+def edit_photo(request, photo_pk):
+    photo = get_object_or_404(request.user.photos, pk=photo_pk)
+    if request.method == "GET":
+        form = PhotoForm(instance=photo)
+    else:
+        form = PhotoForm(data.request.POST, instance=photo)
+        if form.is_valid():
+            form.save()
+            return redirect("view_photo", photo_pk=photo.pk)
+    return render(request, "photogallery/edit_photo.html", {
+        "photo": photo,
+        "form": form
+    })
+
 def index_randomlist(request):
     photos = Photo.objects.public().interacted_with()[:4]
     all_photos = Photo.objects.public().order_by('?').all()[:8]

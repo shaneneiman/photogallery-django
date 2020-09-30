@@ -13,12 +13,18 @@
         {% endif %}
     </a> Number of stars: {{ photo.num_stars }}
 </h4>
+{% if photo.public_photo == True %}
+<div class="text">Public</div><br>
+{% else %}
+<div class="text">Private</div><br>
+{% endif %}
 <div class="text">Camera: {{ photo.camera }}</div><br>
 <div class="text">By: {{ photo.photo_by }}</div><br>
 <div class="text">Date: {{ photo.photo_added_date }}</div><br>
+
 {% if user.is_authenticated and request.user == photo.photo_by %}
 <p>
-    <a class="link" href="#">Edit Photo</a>
+    <a class="link" href="{% url 'edit_photo' photo_pk=photo.pk %}">Edit Photo</a>
     <a class="link" href="{% url 'delete_photo' photo_pk=photo_pk %}">Delete Photo</a>
 </p>
 {% endif %}

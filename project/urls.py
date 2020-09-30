@@ -35,6 +35,7 @@ urlpatterns = [
     path("accounts/profile/", user_views.view_profile, name="profile"),
     # Photo URLS
     path("photo/add/", views.add_photo, name="add_photo"),
+    path("photo/edit/<int:photo_pk>", views.edit_photo, name="edit_photo"),
     path("photo/delete/<int:photo_pk>", views.delete_photo, name="delete_photo"),
     path("photo/userphotos", views.user_photos_list, name="user_photos"),
     path("photo/view/<int:photo_pk>", views.view_photo, name="view_photo"),
