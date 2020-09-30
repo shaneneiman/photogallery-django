@@ -11,19 +11,21 @@
     </form>
 </div>
 
+
 <h3 class="title">Galleries</h3>
 <div class="flex-container">
     {% if galleries is not None %}
     {% for gallery in galleries %}
-        <div class="flex-item">
-            <a class="link" href="{% url 'view_gallery' gallery.pk %}">{{ gallery.title }}</a>
-            <div><img src="{{ gallery.photos.first.photo_thumb.url }}"></div>
-        </div><br>
+    <div class="flex-item">
+        <div class="text">{{ gallery.title }}</div>
+        <a href="{% url 'view_gallery' gallery.pk %}"><img src="{{ gallery.photos.first.photo_thumb.url }}"></a>
+    </div><br>
     {% empty %}
         <p class="text">There are no galleries matching your search</p>
     {% endfor %}
 {% endif %}
 </div>
+
 
 <h3 class="title">Photos</h3>
 <div class="flex-container">

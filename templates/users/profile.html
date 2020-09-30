@@ -2,9 +2,8 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<p>{{ user }}</p>
-<p>{{ user.bio }}</p>
-<a href ="#">Edit Profile</a>
-<a href="{% url 'socialaccount_connections' %}">Manage Social Account Login Information</a>
+<p class="text">{{ user }}</p>
+<a class="link" href ="#">Edit Profile</a>
+<a class="link" href="{% url 'socialaccount_connections' %}">Manage Social Account Login Information</a>
 {% endif %}
 {% endblock %}

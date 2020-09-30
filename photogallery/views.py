@@ -231,8 +231,16 @@ def view_photo(request, photo_pk):
         starred_photo = True
     if photo.gallery.all() is not None:
         gallery = photo.gallery.first()
+    if request.method == "GET":
+        form = PhotoForm(instance=photo)
+    else:
+        form = PhotoForm(request.POST, instance=photo)
+        if form.is_valid():
+            form.save()
+            return redirect("view_photo", photo_pk=photo.pk)
     return render(request, "photogallery/view_photo.html", {
         "photo": photo,
+        "form": form,
         "comments": comments,
         "CommentForm": CommentForm,
         "photo_pk": photo_pk,

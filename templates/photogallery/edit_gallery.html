@@ -12,7 +12,7 @@
         {{ form.as_p }}
         <div>
             <button type="submit">Update Gallery</button>
-           <a class="link" href="{% url 'view_gallery' gallery_pk=gallery.pk %}">Cancel Update</a> 
+           <a href="{% url 'view_gallery' gallery_pk=gallery.pk %}"><button>Cancel Update</button></a> 
         </div>
     </form>
 </div>

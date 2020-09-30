@@ -4,8 +4,8 @@
     {% if user.is_authenticated %}
     <h2 class="title">Welcome, {{ request.user }}!</h2>
     <p>
-        <a class="link" href="{% url 'add_photo' %}">Add Photo</a>
-        <a class="link" href="{% url 'add_gallery' %}">Create Gallery</a>
+        <a href="{% url 'add_photo' %}"><button>Add Photo</button></a>
+        <a href="{% url 'add_gallery' %}"><button>Create Gallery</button></a>
     </p>
     {% endif %}
     <h3 class="title">Top Photos</h3>
