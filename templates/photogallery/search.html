@@ -3,7 +3,7 @@
 {% block content %}
 <h2 class="title">Search Galleries and Photos</h2>
 <div class="flex-item">
-    <form action="{% url 'search' %}" method="GET">
+    <form class="form-style" action="{% url 'search' %}" method="GET">
         <input type="search" name="q" placeholder="Seach Photos and Galleries" value="{{query}}">
         <p>
             <button type="submit">Search</button>

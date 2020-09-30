@@ -3,7 +3,7 @@
 {% block content %}
 <h2 class="title">Add a new gallery!</h2>
 <p class="text">Photos can be added after a gallery is started.</p>
-<form action ="{% url 'add_gallery' %}" method="POST" enctype="multipart/form-data">
+<form class="form-style" action ="{% url 'add_gallery' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Add Gallery</button>

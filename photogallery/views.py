@@ -124,6 +124,7 @@ def delete_photo(request, photo_pk):
 @login_required
 def edit_gallery(request, gallery_pk):
     gallery = get_object_or_404(request.user.galleries, pk=gallery_pk)
+    photos = gallery.photos.all()
     if request.method == "GET":
         form = GalleryForm(instance=gallery)
     else:
@@ -131,7 +132,12 @@ def edit_gallery(request, gallery_pk):
         if form.is_valid():
             form.save()
             return redirect("view_gallery", gallery_pk=gallery.pk)
-    return render(request, "photogallery/edit_gallery.html")
+    return render(request, "photogallery/edit_gallery.html", {
+        "gallery": gallery,
+        "photos": photos,
+        "form": form,
+        "PhotoForm": PhotoForm
+    })
 
 
 def index_randomlist(request):

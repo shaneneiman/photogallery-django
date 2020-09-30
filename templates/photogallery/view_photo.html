@@ -23,7 +23,7 @@
 </p>
 {% endif %}
 <div>
-    <form action="{% url 'add_comment' photo_pk=photo_pk %}" method="POST">
+    <form class="form-style" action="{% url 'add_comment' photo_pk=photo_pk %}" method="POST">
         {% csrf_token %}
         {{ CommentForm.as_p }}
         <button type="submit">Add Comment</button>
