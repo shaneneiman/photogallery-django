@@ -86,8 +86,3 @@ class Comment(models.Model):
     comments = models.ForeignKey(to=Photo, on_delete=models.CASCADE, related_name="comments", null=True, blank=True)
     body = models.TextField(null=False, blank=False)
     comment_date = models.DateTimeField(auto_now_add=True)
-
-
-class Pinned(models.Model):
-    pinned_photo = models.ForeignKey(to=Photo, on_delete=models.CASCADE, related_name="pinned", null=True, blank=True)
-    pinned_by = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="pinned_photo", null=True, blank=True)

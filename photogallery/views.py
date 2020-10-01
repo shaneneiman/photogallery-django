@@ -7,7 +7,7 @@ from django.http import JsonResponse
 
 
 #Project File Imports
-from .models import Photo, Gallery, Comment, Pinned
+from .models import Photo, Gallery, Comment
 from .forms import PhotoForm, GalleryForm, CommentForm
 
 
