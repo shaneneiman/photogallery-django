@@ -21,7 +21,6 @@
     {% for photo in photos %}
     <div class="flex-item">
         <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
-        <div class="text">{{ photo.camera }}</div>
     </div>
     {% empty %}
     <p class="text">There are no photos in this gallery yet!</p>
