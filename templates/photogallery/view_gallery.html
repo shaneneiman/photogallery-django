@@ -2,14 +2,8 @@
 
 {% block content %}
 <h3 class="title">{{ gallery.title }}</h3>
-{% if gallery.public_gallery == True %}
-<div class="text">Public</div><br>
-{% else %}
-<div class="text">Private</div><br>
-{% endif %}
-<div class="text">Started: {{ gallery.date_added }}</div><br>
-<div class="text">Updated: {{ gallery.date_updated }}</div><br>
-<div class="text">Owners: {% for user in user_list %} {{ user.username }}, {% endfor %}</div><br>
+<div class="text">{% for user in user_list %} {{ user.username }}, {% endfor %}</div><br>
+<div class="text">STARTED {{ gallery.date_added }} | UPDATED {{ gallery.date_updated }}</div><br>
 {% if user.is_authenticated and request.user in gallery.gallery_of.all %}
 <p>
     <a class="link" href="{% url 'edit_gallery' gallery_pk=gallery.pk %}"><button>Edit Gallery</button></a>

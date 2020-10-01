@@ -224,7 +224,7 @@ def view_gallery(request, gallery_pk):
 @login_required
 def view_photo(request, photo_pk):
     photo = get_object_or_404(Photo.objects.for_user(request.user).count_interactions(), pk=photo_pk)
-    comments = photo.comments.all()
+    comments = photo.comments.order_by("comment_date").reverse()
     starred_photo = False
     gallery = None
     if photo in request.user.starred_photos.all():

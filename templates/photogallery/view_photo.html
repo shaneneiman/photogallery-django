@@ -11,16 +11,9 @@
         {% else %}
             &#9734;
         {% endif %}
-    </a> Number of stars: {{ photo.num_stars }}
+    </a>{{ photo.num_stars }} STARS | {{ photo.num_comments }} COMMENTS
 </h4>
-{% if photo.public_photo == True %}
-<div class="text">Public</div><br>
-{% else %}
-<div class="text">Private</div><br>
-{% endif %}
-<div class="text">Camera: {{ photo.camera }}</div><br>
-<div class="text">By: {{ photo.photo_by }}</div><br>
-<div class="text">Date: {{ photo.photo_added_date }}</div><br>
+<div class="text">{{ photo.photo_by }} | {{ photo.camera }} | {{ photo.photo_added_date }}</div><br>
 {% if gallery is not None %}
 <a href="{% url 'view_gallery' gallery_pk=gallery.pk %}"><button>Visit Gallery</button></a><br>
 {% endif %}
@@ -45,8 +38,7 @@
 </div>
 {% endif %}
 
-<h2 class="title">Comments</h2>
-<div class="text">Number of comments: {{ photo.num_comments }}</div><br>
+<h4 class="title">Comments</h4>
 <div><button id="addcomment-button">Add Comment</button></div>
 <div id="addcomment-form" class="hidden">
     <form class="form-style" action="{% url 'add_comment' photo_pk=photo_pk %}" method="POST">
@@ -54,13 +46,11 @@
         {{ CommentForm.as_p }}
         <button type="submit">Add Comment</button>
     </form>
-</div>
+</div><br>
 {% if comments is not None %}
     {% for comment in comments %}
     <div class="flex-item">
-        <div class="text">{{ comment.comment_by }}</div><br>
-        <div class="text">{{ comment.body }}</div><br>
-        <div class="text">{{ comment.comment_date }}</div><br>
+        <div class="text"><b>{{ comment.comment_by }}</b>   {{ comment.body }}</div>
     </div>
     {% empty %}
     <p class="text">No comments yet!</p>
@@ -87,13 +77,6 @@
     })
 
     // Show Forms and Hide Buttons
-    function makeEditPhotoFormVisable () {
-        let editPhotoFormSection = document.querySelector("#editphoto-form")
-        let editPhotoButton = document.querySelector("#editphoto-button")
-        editPhotoFormSection.classList.remove("hidden")
-        editPhotoButton.classList.add("hidden")
-    }
-
     function makeAddCommentFormVisable () {
         let addCommentFormSection = document.querySelector("#addcomment-form")
         let addCommentButton = document.querySelector("#addcomment-button")
@@ -101,10 +84,21 @@
         addCommentButton.classList.add("hidden")
     }
 
-    let editPhoto = document.querySelector("#editphoto-button")
-    editPhoto.addEventListener("click", makeEditPhotoFormVisable)
+    function makeEditPhotoFormVisable () {
+        let editPhotoFormSection = document.querySelector("#editphoto-form")
+        let editPhotoButton = document.querySelector("#editphoto-button")
+        editPhotoFormSection.classList.remove("hidden")
+        editPhotoButton.classList.add("hidden")
+    }
 
     let addComment = document.querySelector("#addcomment-button")
-    addComment.addEventListener("click", makeAddCommentFormVisable)
+    if (addComment) {
+        addComment.addEventListener("click", makeAddCommentFormVisable)
+    }
+    
+    let editPhoto = document.querySelector("#editphoto-button")
+    if (editPhoto) {
+        editPhoto.addEventListener("click", makeEditPhotoFormVisable)
+    }
 </script>
 {% endblock %}

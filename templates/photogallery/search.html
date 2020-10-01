@@ -33,9 +33,7 @@
     {% for photo in photos %}
         <div class="flex-item">
             <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
-            <div class="text">Camera: {{ photo.camera }} </div>
-            <div class="text">Taken by: {{ photo.photo_by }} </div>
-        </div><br>
+        </div>
     {% empty %}
         <p class="text">There are no photos matching your search</p>
     {% endfor %}

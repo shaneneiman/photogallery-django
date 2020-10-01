@@ -13,7 +13,6 @@
         {% for photo in photos %}
         <div class="flex-item">
             <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
-            <div class="text">Camera: {{ photo.camera }}</div>
         </div>
     {% endfor %}
     </div>
@@ -22,7 +21,6 @@
         {% for photo in all_photos %}
         <div class="flex-item">
             <a href="{% url 'view_photo' photo_pk=photo.pk %}"><img src="{{ photo.photo_thumb.url }}"/></a>
-            <div class="text">Camera: {{ photo.camera }}</div>
         </div>
     {% endfor %}
     </div>
